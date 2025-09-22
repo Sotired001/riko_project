@@ -27,6 +27,7 @@ from PIL import ImageGrab, Image, ImageChops
 import threading
 import subprocess
 import sys
+import shutil
 
 class VMAgentHandler(BaseHTTPRequestHandler):
     dry_run = True  # Default to dry-run; set by run_server
@@ -152,23 +153,39 @@ class VMAgentHandler(BaseHTTPRequestHandler):
 
 
 def check_for_updates():
+    repo_url = "https://github.com/Sotired001/riko_project.git"
     if not os.path.exists('.git'):
-        return  # Not in a git repo, skip
-    try:
-        # Fetch latest changes
-        subprocess.run(['git', 'fetch'], check=True, capture_output=True)
-        # Check status
-        result = subprocess.run(['git', 'status', '-uno'], capture_output=True, text=True)
-        if 'behind' in result.stdout:
-            print("Updates available, pulling latest changes...")
-            subprocess.run(['git', 'pull'], check=True, capture_output=True)
-            print("Code updated successfully, restarting agent...")
-            # Restart the process to load new code
+        print("Not in git repo, cloning repository for auto-update...")
+        try:
+            subprocess.run(['git', 'clone', repo_url, 'temp_repo'], check=True, capture_output=True)
+            # Copy updated files
+            import shutil
+            for file in ['vm_agent.py', 'install_remote.bat', 'README.txt']:
+                if os.path.exists(f'temp_repo/remote_setup/{file}'):
+                    shutil.copy2(f'temp_repo/remote_setup/{file}', file)
+            # Clean up
+            shutil.rmtree('temp_repo')
+            print("Repository cloned and updated successfully, restarting agent...")
             os.execv(sys.executable, [sys.executable] + sys.argv)
-    except subprocess.CalledProcessError as e:
-        print(f"Git command failed: {e}")
-    except FileNotFoundError:
-        print("Git not installed, skipping auto-update")
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to clone repo: {e}")
+            return
+    else:
+        try:
+            # Fetch latest changes
+            subprocess.run(['git', 'fetch'], check=True, capture_output=True)
+            # Check status
+            result = subprocess.run(['git', 'status', '-uno'], capture_output=True, text=True)
+            if 'behind' in result.stdout:
+                print("Updates available, pulling latest changes...")
+                subprocess.run(['git', 'pull'], check=True, capture_output=True)
+                print("Code updated successfully, restarting agent...")
+                # Restart the process to load new code
+                os.execv(sys.executable, [sys.executable] + sys.argv)
+        except subprocess.CalledProcessError as e:
+            print(f"Git command failed: {e}")
+        except FileNotFoundError:
+            print("Git not installed, skipping auto-update")
 
 
 def check_updates_loop():
@@ -194,11 +211,10 @@ def run_server(port: int = 8000, host: str = '0.0.0.0', dry_run: bool = True):
         s.close()
     
     print(f"VM agent running on http://{host}:{port} (local IP: {local_ip}) in {mode} mode")
-    # Start auto-update thread if in git repo
-    if os.path.exists('.git'):
-        update_thread = threading.Thread(target=check_updates_loop, daemon=True)
-        update_thread.start()
-        print("Auto-update enabled (checks every 5 minutes)")
+    # Start auto-update thread
+    update_thread = threading.Thread(target=check_updates_loop, daemon=True)
+    update_thread.start()
+    print("Auto-update enabled (checks every 5 minutes)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
