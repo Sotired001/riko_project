@@ -7,7 +7,8 @@ allow the host Riko process to request screenshots and run dry-run actions.
 Endpoints:
 - GET /status -> JSON {status: 'ok', hostname, time}
 - GET /screenshot -> returns base64 JPEG in JSON {image: '<base64>'}
-- POST /exec -> accept a JSON action (type, params) and log it; returns success (dry-run)
+- POST /exec -> accept a JSON action (type, params) and execute it; returns success
+- POST /update -> force immediate update check; returns status
 
 Security: this is intentionally minimal. Run only inside an isolated VM. If you
 expose it beyond localhost you MUST add authentication (not included).
@@ -98,6 +99,16 @@ class VMAgentHandler(BaseHTTPRequestHandler):
             return
 
     def do_POST(self):
+        if self.path == '/update':
+            # Force update endpoint - no auth required for simplicity
+            print("Force update requested via /update endpoint")
+            try:
+                check_for_updates()
+                self._send_json({'status': 'update_check_completed', 'message': 'Check logs for update status'})
+            except Exception as e:
+                self._send_json({'error': f'update failed: {str(e)}'}, status=500)
+            return
+
         if self.path == '/exec':
             # Check token if configured
             expected_token = os.getenv('REMOTE_API_TOKEN')

@@ -10,7 +10,7 @@ Files:
 Instructions:
 1. Copy this entire folder to the remote Windows machine.
 2. Double-click install_remote.bat to install and start the agent.
-3. The agent will run on port 8000, providing /status, /screenshot, /stream, and /exec endpoints.
+3. The agent will run on port 8000, providing /status, /screenshot, /stream, /exec, and /update endpoints.
    - It will print the URL, e.g., "VM agent running on http://0.0.0.0:8000 (local IP: <your-local-ip>)"
    - To find the remote machine's IP: Open Command Prompt on remote and run `ipconfig` (look for IPv4 Address under your network adapter).
 4. The agent will automatically check for code updates every 5 minutes and restart if new code is available (requires Git).
@@ -23,6 +23,7 @@ For host-side viewing:
 
 For actions:
 - The host can send commands to the remote via /exec (executes actions in live-run mode by default).
+- To force an immediate update check: POST to /update endpoint
 
 Security:
 - The agent runs in live-run mode (executes actions - use in isolated environments only).
