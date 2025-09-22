@@ -11,7 +11,7 @@ Instructions:
 1. Copy this entire folder to the remote Windows machine.
 2. Double-click install_remote.bat to install and start the agent.
 3. The agent will run on port 8000, providing /status, /screenshot, /stream, and /exec endpoints.
-   - It will print the URL, e.g., "VM agent running on http://0.0.0.0:8000 (local IP: 192.168.1.100)"
+   - It will print the URL, e.g., "VM agent running on http://0.0.0.0:8000 (local IP: <your-local-ip>)"
    - To find the remote machine's IP: Open Command Prompt on remote and run `ipconfig` (look for IPv4 Address under your network adapter).
 4. The agent will automatically check for code updates every 5 minutes and restart if new code is available (requires Git).
 
@@ -31,3 +31,7 @@ Security:
 
 For deployment:
 - Use the host's deploy_to_remote.ps1 to copy this folder automatically.
+- Or set up automated deployment via GitHub Actions (see .github/workflows/deploy.yml):
+  - Set repository secrets: REMOTE_HOST, REMOTE_PATH, SSH_KEY
+  - Ensure SSH access to remote machine is configured
+  - Push to the deployment branch to trigger automatic deployment

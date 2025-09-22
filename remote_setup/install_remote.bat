@@ -59,7 +59,7 @@ if errorlevel 1 (
 
 REM Install required packages
 echo Installing dependencies...
-pip install pillow
+pip install pillow pyautogui
 
 REM Run the agent
 echo Starting remote agent on port 8000...

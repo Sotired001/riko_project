@@ -6,7 +6,8 @@ Provides simple wrappers: get_status(), get_screenshot(), exec_action()
 
 Usage (host):
 from external_reused.vm_agent_client import VMAgentClient
-client = VMAgentClient('http://192.168.56.101:8000')  # replace with your VM IP
+import os
+client = VMAgentClient(os.getenv('VM_AGENT_URL', 'http://127.0.0.1:8000'))
 print(client.get_status())
 img = client.get_screenshot()
 
