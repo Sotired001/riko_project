@@ -52,3 +52,16 @@ screenshot.png
 # Secrets
 secrets.json
 config.json
+
+# Private keys and certs
+*.pem
+*.p12
+*.pfx
+*.key
+id_rsa*
+id_ed25519*
+*.crt
+*.cert
+
+# Agent artifacts (local deploy copies)
+agent_setup/
