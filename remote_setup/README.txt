@@ -22,11 +22,11 @@ For host-side viewing:
 - Press 'q' to quit the viewer.
 
 For actions:
-- The host can send commands to the remote via /exec (logged in dry-run mode by default).
+- The host can send commands to the remote via /exec (executes actions in live-run mode by default).
 
 Security:
-- The agent runs in dry-run mode (logs actions without executing).
-- Use --no-dry-run to enable live execution (dangerous, only in isolated environments).
+- The agent runs in live-run mode (executes actions - use in isolated environments only).
+- Use --dry-run to enable safe logging mode without execution.
 - Optionally set REMOTE_API_TOKEN for authentication.
 
 For deployment:

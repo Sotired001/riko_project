@@ -194,10 +194,10 @@ def check_updates_loop():
         time.sleep(300)  # Check every 5 minutes
 
 
-def run_server(port: int = 8000, host: str = '0.0.0.0', dry_run: bool = True):
+def run_server(port: int = 8000, host: str = '0.0.0.0', dry_run: bool = False):
     VMAgentHandler.dry_run = dry_run
     server = HTTPServer((host, port), VMAgentHandler)
-    mode = 'dry-run (log only)' if dry_run else 'live-run (executes actions - USE WITH CAUTION)'
+    mode = 'dry-run (log only)' if dry_run else 'live-run (executes actions)'
     
     # Get local IP
     import socket
@@ -225,8 +225,7 @@ def run_server(port: int = 8000, host: str = '0.0.0.0', dry_run: bool = True):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=8000)
-    parser.add_argument('--dry-run', action='store_true', default=True, help='Log actions only (default); use --no-dry-run to execute actions (dangerous)')
-    parser.add_argument('--no-dry-run', action='store_false', dest='dry_run')
+    parser.add_argument('--dry-run', action='store_true', default=False, help='Log actions only (safe mode); use --dry-run to enable safe logging only')
     args = parser.parse_args()
     run_server(args.port, dry_run=args.dry_run)
 
