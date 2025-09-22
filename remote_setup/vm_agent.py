@@ -168,14 +168,26 @@ def check_for_updates():
     if not os.path.exists('.git'):
         print("Not in git repo, cloning repository for auto-update...")
         try:
+            # Clean up any existing temp_repo first
+            if os.path.exists('temp_repo'):
+                try:
+                    shutil.rmtree('temp_repo')
+                except:
+                    pass  # Ignore cleanup errors
+            
             subprocess.run(['git', 'clone', repo_url, 'temp_repo'], check=True, capture_output=True)
             # Copy updated files
             import shutil
             for file in ['vm_agent.py', 'install_remote.bat', 'README.txt']:
                 if os.path.exists(f'temp_repo/remote_setup/{file}'):
                     shutil.copy2(f'temp_repo/remote_setup/{file}', file)
-            # Clean up
-            shutil.rmtree('temp_repo')
+            
+            # Try to clean up, but don't fail if it doesn't work
+            try:
+                shutil.rmtree('temp_repo')
+            except Exception as e:
+                print(f"Warning: Could not clean up temp_repo: {e}")
+            
             print("Repository cloned and updated successfully, restarting agent...")
             os.execv(sys.executable, [sys.executable] + sys.argv)
         except subprocess.CalledProcessError as e:
