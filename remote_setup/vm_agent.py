@@ -189,6 +189,7 @@ def check_for_updates():
 
 
 def check_updates_loop():
+    print("Auto-update thread started, checking for updates...")
     while True:
         check_for_updates()
         time.sleep(300)  # Check every 5 minutes
