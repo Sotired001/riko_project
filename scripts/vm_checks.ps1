@@ -58,14 +58,14 @@ if ($running -match [regex]::Escape($vmName)) {
     Write-Warn "VM is not running. You may need to start it with: VBoxManage startvm \"$vmName\" --type gui"
 }
 
-# Check VRDE (Remote Display) and Guest Additions status
+# Check VRDE (Agent Display) and Guest Additions status
 try {
     $vminfo = & VBoxManage showvminfo "$vmName" --machinereadable
     if ($vminfo) {
         # VRDE
         if ($vminfo -match 'vrde="(?<vrde>.+)"') {
             $vrde = $matches['vrde']
-            if ($vrde -eq 'off') { Write-Warn "VRDE (remote display) is off. Enable if you need remote access." } else { Write-Ok "VRDE: $vrde" }
+                if ($vrde -eq 'off') { Write-Warn "VRDE (agent display) is off. Enable if you need agent access." } else { Write-Ok "VRDE: $vrde" }
         }
 
         # Guest Additions detected via GuestAdditionsRunLevel or GuestAdditionsVersion

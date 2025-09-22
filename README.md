@@ -1,27 +1,27 @@
-# Riko AI - Riko Host
+# Riko AI - Riko Orchestrator
 
-A comprehensive AI assistant system designed to run on a host machine with remote control capabilities.
+A comprehensive AI assistant system designed to run on an orchestrator machine with agent control capabilities.
 
 ## Overview
 
 Riko AI is an intelligent assistant that can be controlled remotely through a dedicated control interface. The system is split into two main components:
 
-- **Riko AI (Host)**: The main AI system running on the host machine
-- **Riko Remote**: Remote control interface for accessing the host system
+- **Riko Orchestrator** (formerly "Riko Host"): The main AI system running on the orchestrator machine
+- **Riko Agent** (formerly "Riko Remote"): Agent control interface for accessing target systems
 
 ## Features
 
 - 🤖 **AI-Powered Assistant**: Intelligent conversation and task execution
-- 🖥️ **Remote Control**: Access and control the host machine remotely
-- 🔄 **Auto-Updates**: Automatic system updates for both host and remote components
-- 🔒 **Secure Communication**: Token-based authentication for remote access
+- 🖥️ **Agent Control**: Access and control target machines via agents
+- 🔄 **Auto-Updates**: Automatic system updates for both orchestrator and agent components
+- 🔒 **Secure Communication**: Token-based authentication for agent access
 - 📊 **Real-time Monitoring**: Live screenshot streaming and system status
 
 ## Architecture
 
 ```
 ┌─────────────────┐    HTTP API    ┌──────────────────┐
-│   Remote Control │◄─────────────►│   Riko AI Host   │
+│   Agent Control │◄─────────────►│   Riko Orchestrator   │
 │   (Client)      │                │   (Server)       │
 │                 │                │                  │
 │ - Control UI    │                │ - AI Assistant   │
@@ -35,7 +35,7 @@ Riko AI is an intelligent assistant that can be controlled remotely through a de
 ### Prerequisites
 
 - Python 3.8+
-- Windows OS (for host machine)
+- Windows OS (for orchestrator machine)
 - Internet connection for updates
 
 ### Installation
@@ -51,35 +51,35 @@ Riko AI is an intelligent assistant that can be controlled remotely through a de
    pip install -r requirements.txt
    ```
 
-3. **Set up remote control (optional):**
+3. **Set up agent control (optional):**
    ```bash
-   # Clone the remote control repository
-   git clone https://github.com/Sotired001/Riko-Remote.git
-   cd Riko-Remote
+   # Clone the agent control repository (formerly Riko-Remote)
+   git clone https://github.com/Sotired001/riko-agent.git
+   cd riko-agent
    pip install -r requirements.txt
    ```
 
 ### Running Riko AI
 
-1. **Start the AI host:**
+1. **Start the orchestrator:**
    ```bash
    python main.py
    ```
 
-2. **Configure remote access (optional):**
-   - Set environment variable: `REMOTE_API_TOKEN=your-secure-token`
-   - Start remote control interface from the Riko-Remote repository
+2. **Configure agent access (optional):**
+   - Set environment variable: `AGENT_API_TOKEN=your-secure-token` (the code will also accept `REMOTE_API_TOKEN` for compatibility)
+   - Start agent interface from the `riko-agent` repository
 
 ## Configuration
 
 ### Environment Variables
 
-- `REMOTE_API_TOKEN`: Secure token for remote API access (required for remote control)
-- `HOST_AGENT_URL`: URL of the remote control agent (default: http://127.0.0.1:8000)
+- `AGENT_API_TOKEN`: Secure token for agent API access (required for agent control). `REMOTE_API_TOKEN` is accepted for backward compatibility.
+- `AGENT_URL`: URL of the agent (default: http://127.0.0.1:8000)
 
 ### Security
 
-- Always set a strong, unique `REMOTE_API_TOKEN`
+- Always set a strong, unique `AGENT_API_TOKEN`
 - Run on trusted networks only
 - Keep both repositories updated for security patches
 
@@ -94,11 +94,11 @@ riko_project/
 └── README.md            # This file
 ```
 
-## Remote Control Integration
+## Agent Control Integration
 
-The Riko AI system integrates with the Riko-Remote repository for remote control capabilities:
+The Riko Orchestrator integrates with the `riko-agent` repository for agent control capabilities:
 
-- **Repository**: [Riko-Remote](https://github.com/Sotired001/Riko-Remote)
+- **Repository**: [riko-agent](https://github.com/Sotired001/riko-agent)
 - **Features**: Screenshot capture, mouse/keyboard control, live streaming
 - **Security**: Token-based authentication, rate limiting, audit logging
 
@@ -132,4 +132,8 @@ This project is for educational and personal use. See individual component licen
 
 ---
 
-**Note**: This system provides remote control capabilities. Use responsibly and only on machines you have permission to control.
+**Note**: This system provides agent control capabilities. Use responsibly and only on machines you have permission to control.
+
+## Migration note
+
+This repository is transitioning terminology from "host/remote" to "orchestrator/agent". Code accepts old environment variable names (`REMOTE_API_TOKEN`) for backward compatibility for at least one release cycle. Prefer the new names (`AGENT_API_TOKEN`, `riko-agent`) for new deployments and scripts.

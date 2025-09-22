@@ -1,7 +1,7 @@
 @echo off
-REM install_remote.bat - One-click setup and run the remote agent on Windows
+REM install_agent.bat - One-click setup and run the agent on Windows
 
-echo Setting up remote agent...
+echo Setting up agent...
 
 REM Change to the repo root (parent of scripts/)
 cd /d "%~dp0.."
@@ -47,7 +47,7 @@ echo Installing dependencies...
 pip install pillow
 
 REM Run the agent
-echo Starting remote agent on port 8000...
+echo Starting agent on port 8000...
 python scripts\vm_agent.py --port 8000
 
 pause

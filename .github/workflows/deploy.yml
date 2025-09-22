@@ -1,4 +1,4 @@
-name: Deploy to Remote Runner
+name: Deploy to Agent Runner
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest  # Or ubuntu-latest if remote is Linux
+  runs-on: windows-latest  # Or ubuntu-latest if agent is Linux
 
     steps:
     - name: Checkout code
@@ -14,16 +14,20 @@ jobs:
 
     - name: Deploy via SCP
       run: |
-        # Assumes SSH key is set up for remote access
-        # Set REMOTE_HOST, REMOTE_PATH, SSH_KEY in secrets
+        # Assumes SSH key is set up for agent access
+        # Prefer AGENT_HOST, AGENT_PATH, SSH_KEY in secrets; fall back to REMOTE_HOST/REMOTE_PATH
+        HOST="${{ secrets.AGENT_HOST || secrets.REMOTE_HOST }}"
+        PATH_VAR="${{ secrets.AGENT_PATH || secrets.REMOTE_PATH }}"
         echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        scp -r . ${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_PATH }}
+        scp -r . ${HOST}:${PATH_VAR}
       env:
         SSH_KEY: ${{ secrets.SSH_KEY }}
 
-    - name: Restart remote service
+    - name: Restart agent service
       run: |
-        ssh ${{ secrets.REMOTE_HOST }} "cd ${{ secrets.REMOTE_PATH }} && ./scripts/install_remote.bat"
+        HOST="${{ secrets.AGENT_HOST || secrets.REMOTE_HOST }}"
+        PATH_VAR="${{ secrets.AGENT_PATH || secrets.REMOTE_PATH }}"
+        ssh ${HOST} "cd ${PATH_VAR} && ./scripts/install_agent.bat"
       env:
         SSH_KEY: ${{ secrets.SSH_KEY }}
