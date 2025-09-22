@@ -1,4 +1,4 @@
-# Riko AI - General Use Host
+# Riko AI - Riko Host
 
 A comprehensive AI assistant system designed to run on a host machine with remote control capabilities.
 
